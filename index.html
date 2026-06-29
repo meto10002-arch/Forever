@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Forever Chat</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#111;
+color:#fff;
+display:flex;
+flex-direction:column;
+height:100vh;
+}
+
+header{
+background:#fff;
+color:#000;
+padding:18px;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+}
+
+#messages{
+flex:1;
+overflow-y:auto;
+padding:15px;
+}
+
+.msg{
+background:#222;
+padding:12px;
+margin-bottom:10px;
+border-radius:12px;
+}
+
+.sender{
+color:#00ff66;
+font-weight:bold;
+font-size:18px;
+margin-bottom:6px;
+}
+
+.time{
+font-size:11px;
+color:#aaa;
+margin-top:6px;
+}
+
+footer{
+display:flex;
+}
+
+input{
+flex:1;
+padding:15px;
+border:none;
+font-size:18px;
+outline:none;
+}
+
+button{
+width:120px;
+border:none;
+background:#00c853;
+color:#fff;
+font-size:22px;
+}
+
+#nameBox{
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:#111;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+#card{
+width:90%;
+background:#222;
+padding:25px;
+border-radius:12px;
+}
+
+#card h2{
+margin-bottom:20px;
+}
+
+#username{
+width:100%;
+padding:15px;
+margin-bottom:15px;
+font-size:18px;
+}
+
+#saveName{
+width:100%;
+padding:15px;
+background:#00c853;
+color:#fff;
+font-size:20px;
+border:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+Chat 💬
+</header>
+
+<div id="messages"></div>
+
+<footer>
+<input id="text" placeholder="اكتب رسالتك">
+<button id="send">إرسال</button>
+</footer>
+
+<div id="nameBox">
+
+<div id="card">
+
+<h2>اكتب اسمك</h2>
+
+<input id="username" placeholder="اسمك">
+
+<button id="saveName">
+دخول
+</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+orderBy,
+onSnapshot,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyBIn6F4zAj0zPLiqeaX-oyw8BN7vcPs1gk",
+authDomain:"forever-6d5f3.firebaseapp.com",
+projectId:"forever-6d5f3",
+storageBucket:"forever-6d5f3.firebasestorage.app",
+messagingSenderId:"59020871625",
+appId:"1:59020871625:web:3b836ecba5a90dbf3d4a18"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+  const messages=document.getElementById("messages");
+const input=document.getElementById("text");
+const send=document.getElementById("send");
+
+const nameBox=document.getElementById("nameBox");
+const username=document.getElementById("username");
+const saveName=document.getElementById("saveName");
+
+let myName=localStorage.getItem("forever_name");
+
+if(myName){
+nameBox.style.display="none";
+}else{
+nameBox.style.display="flex";
+}
+
+saveName.onclick=()=>{
+
+if(username.value.trim()=="") return;
+
+localStorage.setItem("forever_name",username.value.trim());
+
+myName=username.value.trim();
+
+nameBox.style.display="none";
+
+};
+
+const q=query(
+collection(db,"private_chat"),
+orderBy("time")
+);
+
+onSnapshot(q,(snap)=>{
+
+messages.innerHTML="";
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+const box=document.createElement("div");
+
+box.className="msg";
+
+let t="";
+
+if(d.time){
+
+t=new Date(d.time.seconds*1000)
+.toLocaleTimeString("ar-IQ");
+
+}
+
+box.innerHTML=`
+
+<div class="sender">
+${d.sender}
+</div>
+
+<div>
+${d.text}
+</div>
+
+<div class="time">
+${t}
+</div>
+
+`;
+
+messages.appendChild(box);
+
+});
+
+messages.scrollTop=messages.scrollHeight;
+
+});
+
+send.onclick=async()=>{
+
+if(input.value.trim()=="") return;
+
+await addDoc(collection(db,"private_chat"),{
+
+sender:myName,
+
+text:input.value,
+
+time:serverTimestamp()
+
+});
+
+input.value="";
+
+};
+
+input.addEventListener("keypress",(e)=>{
+
+if(e.key==="Enter"){
+
+send.click();
+
+}
+
+});
+  </script>
+
+</body>
+</html>
