@@ -1,69 +1,114 @@
 import {
-  db,
-  collection,
-  addDoc,
-  serverTimestamp
+db,
+collection,
+addDoc,
+query,
+orderBy,
+onSnapshot,
+serverTimestamp
 } from "./firebase.js";
-
-import {
-  query,
-  orderBy,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const messages = document.getElementById("messages");
 const text = document.getElementById("text");
 const send = document.getElementById("send");
 
-const username = localStorage.getItem("username") || prompt("اكتب اسمك");
+let myName = localStorage.getItem("forever_name");
 
-localStorage.setItem("username", username);
+if(!myName){
+
+myName = prompt("اكتب اسمك");
+
+if(!myName || myName.trim()==""){
+
+myName = "زائر";
+
+}
+
+localStorage.setItem("forever_name",myName);
+
+}
 
 const q = query(
-  collection(db, "messages"),
-  orderBy("time")
-);onSnapshot(q, (snapshot) => {
-  messages.innerHTML = "";
+collection(db,"private_chat"),
+orderBy("time")
+);
 
-  snapshot.forEach((doc) => {
-    const data = doc.data();
+onSnapshot(q,(snapshot)=>{
 
-    const div = document.createElement("div");
-    div.className =
-      "message " +
-      (data.sender === username ? "me" : "friend");
+messages.innerHTML="";
 
-    div.innerHTML = `
-      <div class="name">${data.sender}</div>
-      <div>${data.text}</div>
-      <div class="time">
-        ${
-          data.time
-            ? new Date(data.time.seconds * 1000).toLocaleTimeString()
-            : ""
-        }
-      </div>
-    `;
+snapshot.forEach((doc)=>{
 
-    messages.appendChild(div);
-  });
+const data = doc.data();
 
-  messages.scrollTop = messages.scrollHeight;
+const div = document.createElement("div");
+
+div.className = "message";
+
+if(data.sender===myName){
+
+div.classList.add("me");
+
+}else{
+
+div.classList.add("friend");
+
+}
+
+let time="";
+
+if(data.time){
+
+time = new Date(data.time.seconds*1000)
+.toLocaleTimeString("ar-IQ",{
+hour:"2-digit",
+minute:"2-digit"
 });
-send.onclick = async () => {
-  if (text.value.trim() === "") return;
 
-  await addDoc(collection(db, "messages"), {
-    sender: username,
-    text: text.value,
-    time: serverTimestamp()
-  });
+}
 
-  text.value = "";
+div.innerHTML=`
+
+<div class="sender">${data.sender}</div>
+
+<div class="text">${data.text}</div>
+
+<div class="time">${time}</div>
+
+`;
+
+messages.appendChild(div);
+
+});
+
+messages.scrollTop = messages.scrollHeight;
+
+});
+
+send.onclick = async()=>{
+
+if(text.value.trim()=="") return;
+
+await addDoc(collection(db,"private_chat"),{
+
+sender:myName,
+
+text:text.value,
+
+time:serverTimestamp()
+
+});
+
+text.value="";
+
 };
 
-text.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    send.click();
-  }
+text.addEventListener("keypress",(e)=>{
+
+if(e.key==="Enter"){
+
+send.click();
+
+}
+
 });
