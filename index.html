@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Forever Chat</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0f172a;
+color:#fff;
+display:flex;
+flex-direction:column;
+height:100vh;
+overflow:hidden;
+}
+
+header{
+height:65px;
+background:#111827;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+font-weight:bold;
+color:#38bdf8;
+border-bottom:1px solid #1f2937;
+}
+
+#messages{
+flex:1;
+overflow-y:auto;
+padding:15px;
+background:#020617;
+}
+
+.message{
+max-width:80%;
+padding:12px;
+border-radius:14px;
+margin-bottom:10px;
+word-wrap:break-word;
+}
+
+.me{
+margin-right:auto;
+background:#2563eb;
+}
+
+.friend{
+margin-left:auto;
+background:#1e293b;
+}
+
+.sender{
+font-size:13px;
+font-weight:bold;
+color:#7dd3fc;
+margin-bottom:5px;
+}
+
+.time{
+font-size:11px;
+color:#cbd5e1;
+margin-top:5px;
+text-align:left;
+}
+
+footer{
+height:70px;
+background:#111827;
+display:flex;
+gap:10px;
+padding:10px;
+}
+
+#text{
+flex:1;
+border:none;
+outline:none;
+padding:15px;
+border-radius:10px;
+background:#1e293b;
+color:white;
+font-size:16px;
+}
+
+#send{
+width:110px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+#login{
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:#020617;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+#card{
+width:90%;
+background:#111827;
+padding:20px;
+border-radius:15px;
+}
+
+#card h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+#username{
+width:100%;
+padding:15px;
+border:none;
+outline:none;
+border-radius:10px;
+margin-bottom:15px;
+font-size:18px;
+}
+
+#loginBtn{
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:white;
+font-size:18px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+Forever Chat 💬
+
+</header>
+
+<div id="messages"></div>
+
+<footer>
+
+<input id="text" placeholder="اكتب رسالة...">
+
+<button id="send">
+
+إرسال
+
+</button>
+
+</footer>
+
+<div id="login">
+
+<div id="card">
+
+<h2>
+
+تسجيل الدخول
+
+</h2>
+
+<input
+id="username"
+placeholder="اسم المستخدم">
+
+<button
+id="loginBtn">
+
+دخول
+
+</button>
+
+</div>
+
+</div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+orderBy,
+onSnapshot,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyBIn6F4zAj0zPLiqeaX-oyw8BN7vcPs1gk",
+
+authDomain:"forever-6d5f3.firebaseapp.com",
+
+projectId:"forever-6d5f3",
+
+storageBucket:"forever-6d5f3.firebasestorage.app",
+
+messagingSenderId:"59020871625",
+
+appId:"1:59020871625:web:3b836ecba5a90dbf3d4a18"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const messages = document.getElementById("messages");
+
+const text = document.getElementById("text");
+
+const send = document.getElementById("send");
+
+const login = document.getElementById("login");
+
+const username = document.getElementById("username");
+
+const loginBtn = document.getElementById("loginBtn");
+
+let myName = localStorage.getItem("forever_name");
+
+if(myName){
+
+login.style.display="none";
+
+}
+  loginBtn.onclick = () => {
+
+if(username.value.trim()==""){
+
+alert("اكتب اسم المستخدم");
+
+return;
+
+}
+
+myName = username.value.trim();
+
+localStorage.setItem("forever_name", myName);
+
+login.style.display = "none";
+
+};
+
+const q = query(
+
+collection(db,"private_chat"),
+
+orderBy("time")
+
+);
+
+onSnapshot(q,(snapshot)=>{
+
+messages.innerHTML="";
+
+snapshot.forEach((doc)=>{
+
+const data = doc.data();
+
+let time="";
+
+if(data.time){
+
+time = new Date(
+
+data.time.seconds*1000
+
+).toLocaleTimeString("ar-IQ");
+
+}
+
+const div=document.createElement("div");
+
+div.className="message";
+
+if(data.sender==myName){
+
+div.classList.add("me");
+
+}else{
+
+div.classList.add("friend");
+
+}
+
+div.innerHTML=`
+
+<div class="sender">
+
+${data.sender}
+
+</div>
+
+<div>
+
+${data.text}
+
+</div>
+
+<div class="time">
+
+${time}
+
+</div>
+
+`;
+
+messages.appendChild(div);
+
+});
+
+messages.scrollTop = messages.scrollHeight;
+
+});
+  send.onclick = async () => {
+
+if(text.value.trim()=="") return;
+
+await addDoc(
+
+collection(db,"private_chat"),
+
+{
+
+sender: myName,
+
+text: text.value,
+
+time: serverTimestamp()
+
+}
+
+);
+
+text.value="";
+
+};
+
+text.addEventListener("keypress",(e)=>{
+
+if(e.key==="Enter"){
+
+send.click();
+
+}
+
+});
+  </script>
+
+</body>
+
+</html>
