@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Forever Chat</title>
+<title>Forever</title>
 
 <style>
 
@@ -19,138 +19,65 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#0f172a;
-color:#fff;
-display:flex;
-flex-direction:column;
+
 height:100vh;
+
+display:flex;
+
+flex-direction:column;
+
 overflow:hidden;
+
+background:url("https://i.ibb.co/QvNgVm3Q/file-00000000c6b0720aa8fde380ede155fb.png");
+
+background-size:cover;
+
+background-position:center;
+
+background-repeat:no-repeat;
+
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(0,0,0,.45);
+
+backdrop-filter:blur(2px);
+
+z-index:-1;
+
 }
 
 header{
-height:65px;
-background:#111827;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:28px;
-font-weight:bold;
-color:#38bdf8;
-border-bottom:1px solid #1f2937;
-}
 
-#messages{
-flex:1;
-overflow-y:auto;
-padding:15px;
-background:#020617;
-}
-
-.message{
-max-width:80%;
-padding:12px;
-border-radius:14px;
-margin-bottom:10px;
-word-wrap:break-word;
-}
-
-.me{
-margin-right:auto;
-background:#2563eb;
-}
-
-.friend{
-margin-left:auto;
-background:#1e293b;
-}
-
-.sender{
-font-size:13px;
-font-weight:bold;
-color:#7dd3fc;
-margin-bottom:5px;
-}
-
-.time{
-font-size:11px;
-color:#cbd5e1;
-margin-top:5px;
-text-align:left;
-}
-
-footer{
 height:70px;
-background:#111827;
+
 display:flex;
-gap:10px;
-padding:10px;
-}
 
-#text{
-flex:1;
-border:none;
-outline:none;
-padding:15px;
-border-radius:10px;
-background:#1e293b;
-color:white;
-font-size:16px;
-}
-
-#send{
-width:110px;
-border:none;
-border-radius:10px;
-background:#22c55e;
-color:white;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-}
-
-#login{
-position:fixed;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:#020617;
-display:flex;
-justify-content:center;
 align-items:center;
-}
 
-#card{
-width:90%;
-background:#111827;
-padding:20px;
-border-radius:15px;
-}
+justify-content:center;
 
-#card h2{
-text-align:center;
-margin-bottom:20px;
-}
+font-size:34px;
 
-#username{
-width:100%;
-padding:15px;
-border:none;
-outline:none;
-border-radius:10px;
-margin-bottom:15px;
-font-size:18px;
-}
+font-weight:bold;
 
-#loginBtn{
-width:100%;
-padding:15px;
-border:none;
-border-radius:10px;
-background:#22c55e;
-color:white;
-font-size:18px;
-cursor:pointer;
+color:#FFD27A;
+
+text-shadow:0 0 20px rgba(255,210,122,.7);
+
 }
 
 </style>
@@ -161,19 +88,21 @@ cursor:pointer;
 
 <header>
 
-Forever Chat 💬
+Forever
 
 </header>
-
 <div id="messages"></div>
 
 <footer>
 
-<input id="text" placeholder="اكتب رسالة...">
+<input
+id="text"
+type="text"
+placeholder="اكتب رسالتك...">
 
 <button id="send">
 
-إرسال
+➤
 
 </button>
 
@@ -185,15 +114,26 @@ Forever Chat 💬
 
 <h2>
 
-تسجيل الدخول
+مرحباً بك
 
 </h2>
 
+<p>
+
+اكتب اسمك للدخول
+
+</p>
+
 <input
+
 id="username"
+
+type="text"
+
 placeholder="اسم المستخدم">
 
 <button
+
 id="loginBtn">
 
 دخول
@@ -203,6 +143,168 @@ id="loginBtn">
 </div>
 
 </div>
+
+<style>
+
+#messages{
+
+flex:1;
+
+overflow-y:auto;
+
+padding:15px;
+
+}
+
+footer{
+
+height:70px;
+
+display:flex;
+
+padding:10px;
+
+gap:10px;
+
+background:rgba(0,0,0,.45);
+
+backdrop-filter:blur(12px);
+
+}
+
+#text{
+
+flex:1;
+
+border:none;
+
+outline:none;
+
+padding:15px;
+
+border-radius:12px;
+
+font-size:16px;
+
+background:rgba(255,255,255,.15);
+
+color:white;
+
+}
+
+#text::placeholder{
+
+color:#ddd;
+
+}
+
+#send{
+
+width:70px;
+
+border:none;
+
+border-radius:12px;
+
+background:#FFD27A;
+
+font-size:24px;
+
+font-weight:bold;
+
+}
+
+#login{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+background:rgba(0,0,0,.65);
+
+}
+
+#card{
+
+width:90%;
+
+background:rgba(20,20,20,.75);
+
+backdrop-filter:blur(18px);
+
+padding:25px;
+
+border-radius:18px;
+
+text-align:center;
+
+}
+
+#card h2{
+
+margin-bottom:15px;
+
+color:#FFD27A;
+
+}
+
+#card p{
+
+margin-bottom:15px;
+
+color:#ddd;
+
+}
+
+#username{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+outline:none;
+
+border-radius:10px;
+
+margin-bottom:15px;
+
+font-size:16px;
+
+}
+
+#loginBtn{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:10px;
+
+background:#FFD27A;
+
+font-size:18px;
+
+font-weight:bold;
+
+}
+
+</style>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -215,8 +317,7 @@ query,
 orderBy,
 onSnapshot,
 serverTimestamp
-}
-from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 const firebaseConfig = {
 
@@ -277,7 +378,7 @@ login.style.display = "none";
 
 const q = query(
 
-collection(db,"private_chat"),
+collection(db,"forever_messages"),
 
 orderBy("time")
 
@@ -291,21 +392,9 @@ snapshot.forEach((doc)=>{
 
 const data = doc.data();
 
-let time="";
+const div = document.createElement("div");
 
-if(data.time){
-
-time = new Date(
-
-data.time.seconds*1000
-
-).toLocaleTimeString("ar-IQ");
-
-}
-
-const div=document.createElement("div");
-
-div.className="message";
+div.className = "message";
 
 if(data.sender==myName){
 
@@ -317,7 +406,19 @@ div.classList.add("friend");
 
 }
 
-div.innerHTML=`
+let t="";
+
+if(data.time){
+
+t = new Date(
+
+data.time.seconds*1000
+
+).toLocaleTimeString("ar-IQ");
+
+}
+
+div.innerHTML = `
 
 <div class="sender">
 
@@ -333,7 +434,7 @@ ${data.text}
 
 <div class="time">
 
-${time}
+${t}
 
 </div>
 
@@ -348,11 +449,23 @@ messages.scrollTop = messages.scrollHeight;
 });
   send.onclick = async () => {
 
-if(text.value.trim()=="") return;
+if(myName == null){
+
+alert("سجل دخول أولاً");
+
+return;
+
+}
+
+if(text.value.trim()==""){
+
+return;
+
+}
 
 await addDoc(
 
-collection(db,"private_chat"),
+collection(db,"forever_messages"),
 
 {
 
