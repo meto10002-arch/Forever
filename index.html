@@ -5,7 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Forever</title>
 
@@ -15,21 +15,37 @@
 
 <body>
 
-<header>
+<div id="login">
 
 <h1>Forever</h1>
 
-</header>
+<img id="preview" src="https://i.ibb.co/z5k7wzj/avatar.png">
 
-<main id="messages">
+<input
+type="file"
+id="photo"
+accept="image/*">
 
-</main>
+<input
+id="name"
+placeholder="اكتب اسمك">
+
+<button id="loginBtn">
+
+دخول
+
+</button>
+
+</div>
+
+<div id="chat">
+
+<div id="messages"></div>
 
 <footer>
 
 <input
 id="text"
-type="text"
 placeholder="اكتب رسالة...">
 
 <button id="send">
@@ -40,7 +56,10 @@ placeholder="اكتب رسالة...">
 
 </footer>
 
+</div>
+
 <script type="module" src="firebase.js"></script>
+
 <script type="module" src="script.js"></script>
 
 </body>
