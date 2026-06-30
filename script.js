@@ -1,140 +1,50 @@
-import {
-db,
-collection,
-addDoc,
-query,
-orderBy,
-onSnapshot,
-serverTimestamp
-} from "./firebase.js";
+const login=document.getElementById("login");
+const chat=document.getElementById("chat");
 
-const messages = document.getElementById("messages");
-const text = document.getElementById("text");
-const send = document.getElementById("send");
+const photo=document.getElementById("photo");
+const preview=document.getElementById("preview");
 
-let myName = localStorage.getItem("forever_name");
+const nameInput=document.getElementById("name");
+const loginBtn=document.getElementById("loginBtn");
 
-if(!myName){
+photo.onchange=()=>{
 
-myName = prompt("اكتب اسمك");
+const file=photo.files[0];
 
-if(!myName || myName.trim()==""){
+if(!file) return;
 
-myName = "زائر";
+const reader=new FileReader();
 
-}
+reader.onload=(e)=>{
 
-localStorage.setItem("forever_name",myName);
-
-}
-
-const avatar="https://i.pravatar.cc/150?img=12";
-
-const q=query(
-collection(db,"private_chat"),
-orderBy("time")
-);
-
-onSnapshot(q,(snapshot)=>{
-
-messages.innerHTML="";
-
-snapshot.forEach((doc)=>{
-
-const data=doc.data();
-
-const box=document.createElement("div");
-
-box.className="message";
-
-if(data.sender===myName){
-
-box.classList.add("me");
-
-}else{
-
-box.classList.add("friend");
-
-}
-
-let t="";
-
-if(data.time){
-
-t=new Date(
-data.time.seconds*1000
-).toLocaleTimeString("ar-IQ",{
-hour:"2-digit",
-minute:"2-digit"
-});
-
-}
-
-box.innerHTML=`
-
-<img class="avatar" src="${avatar}">
-
-<div class="bubble">
-
-<div class="sender">
-
-${data.sender}
-
-</div>
-
-<div class="text">
-
-${data.text}
-
-</div>
-
-<div class="time">
-
-${t}
-
-</div>
-
-</div>
-
-`;
-
-messages.appendChild(box);
-
-});
-
-messages.scrollTop=messages.scrollHeight;
-
-});
-send.onclick = async()=>{
-
-if(text.value.trim()=="") return;
-
-await addDoc(
-
-collection(db,"private_chat"),
-
-{
-
-sender:myName,
-
-text:text.value,
-
-time:serverTimestamp()
-
-}
-
-);
-
-text.value="";
+preview.src=e.target.result;
 
 };
 
-text.addEventListener("keydown",(e)=>{
+reader.readAsDataURL(file);
 
-if(e.key==="Enter"){
+};
 
-send.click();
+loginBtn.onclick=()=>{
+
+if(nameInput.value.trim()==""){
+
+alert("اكتب اسمك");
+
+return;
 
 }
 
-});
+if(photo.files.length==0){
+
+alert("اختر صورة");
+
+return;
+
+}
+
+login.style.display="none";
+
+chat.style.display="flex";
+
+};
