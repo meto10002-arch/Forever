@@ -8,19 +8,19 @@ onSnapshot,
 serverTimestamp
 } from "./firebase.js";
 
-const messages = document.getElementById("messages");
-const text = document.getElementById("text");
-const send = document.getElementById("send");
+const messages=document.getElementById("messages");
+const text=document.getElementById("text");
+const send=document.getElementById("send");
 
-let myName = localStorage.getItem("forever_name");
+let myName=localStorage.getItem("forever_name");
 
 if(!myName){
 
-myName = prompt("اكتب اسمك");
+myName=prompt("اكتب اسمك");
 
 if(!myName || myName.trim()==""){
 
-myName = "زائر";
+myName="زائر";
 
 }
 
@@ -28,7 +28,9 @@ localStorage.setItem("forever_name",myName);
 
 }
 
-const q = query(
+const avatar="https://i.pravatar.cc/100";
+
+const q=query(
 collection(db,"private_chat"),
 orderBy("time")
 );
@@ -39,21 +41,7 @@ messages.innerHTML="";
 
 snapshot.forEach((doc)=>{
 
-const data = doc.data();
-
-const bubble=document.createElement("div");
-
-bubble.className="message";
-
-if(data.sender===myName){
-
-bubble.classList.add("me");
-
-}else{
-
-bubble.classList.add("friend");
-
-}
+const data=doc.data();
 
 let time="";
 
@@ -68,7 +56,25 @@ minute:"2-digit"
 
 }
 
-bubble.innerHTML=`
+const msg=document.createElement("div");
+
+msg.className="message";
+
+if(data.sender===myName){
+
+msg.classList.add("me");
+
+}else{
+
+msg.classList.add("friend");
+
+}
+
+msg.innerHTML=`
+
+<img class="avatar" src="${avatar}">
+
+<div class="bubble">
 
 <div class="sender">
 
@@ -76,7 +82,7 @@ ${data.sender}
 
 </div>
 
-<div class="text">
+<div>
 
 ${data.text}
 
@@ -88,26 +94,35 @@ ${time}
 
 </div>
 
+</div>
+
 `;
 
-messages.appendChild(bubble);
+messages.appendChild(msg);
 
 });
 
 messages.scrollTop=messages.scrollHeight;
 
 });
-send.onclick = async () => {
+send.onclick = async()=>{
 
 if(text.value.trim()=="") return;
 
 await addDoc(
+
 collection(db,"private_chat"),
+
 {
-sender: myName,
-text: text.value,
-time: serverTimestamp()
+
+sender:myName,
+
+text:text.value,
+
+time:serverTimestamp()
+
 }
+
 );
 
 text.value="";
