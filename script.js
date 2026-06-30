@@ -14,7 +14,7 @@ const chat=document.getElementById("chat");
 const photo=document.getElementById("photo");
 const preview=document.getElementById("preview");
 
-const nameInput=document.getElementById("name");
+const name=document.getElementById("name");
 const loginBtn=document.getElementById("loginBtn");
 
 const messages=document.getElementById("messages");
@@ -27,6 +27,7 @@ let myPhoto=localStorage.getItem("forever_photo");
 if(myName && myPhoto){
 
 login.style.display="none";
+
 chat.style.display="flex";
 
 }
@@ -53,7 +54,7 @@ reader.readAsDataURL(file);
 
 loginBtn.onclick=()=>{
 
-if(nameInput.value.trim()==""){
+if(name.value.trim()==""){
 
 alert("اكتب اسمك");
 
@@ -69,7 +70,7 @@ return;
 
 }
 
-myName=nameInput.value;
+myName=name.value.trim();
 
 localStorage.setItem("forever_name",myName);
 
@@ -80,28 +81,45 @@ login.style.display="none";
 chat.style.display="flex";
 
 };
-const q = query(
-  collection(db, "private_chat"),
-  orderBy("time")
+const q=query(
+collection(db,"private_chat"),
+orderBy("time")
 );
 
-send.onclick = async () => {
+send.onclick=async()=>{
 
-  if (text.value.trim() == "") return;
+if(text.value.trim()=="") return;
 
-  await addDoc(
-    collection(db, "private_chat"),
-    {
-      sender: myName,
-      photo: myPhoto,
-      text: text.value,
-      time: serverTimestamp()
-    }
-  );
+await addDoc(
+collection(db,"private_chat"),
+{
 
-  text.value = "";
+sender:myName,
+
+photo:myPhoto,
+
+text:text.value.trim(),
+
+time:serverTimestamp()
+
+}
+
+);
+
+text.value="";
 
 };
+
+text.addEventListener("keydown",(e)=>{
+
+if(e.key==="Enter"){
+
+send.click();
+
+}
+
+});
+
 onSnapshot(q,(snapshot)=>{
 
 messages.innerHTML="";
@@ -124,6 +142,8 @@ msg.classList.add("friend");
 
 }
 
+const avatar=data.photo || "https://i.ibb.co/z5k7wzj/avatar.png";
+
 let t="";
 
 if(data.time){
@@ -137,7 +157,7 @@ minute:"2-digit"
 
 msg.innerHTML=`
 
-<img class="avatar" src="${data.photo}">
+<img class="avatar" src="${avatar}">
 
 <div class="bubble">
 
