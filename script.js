@@ -8,19 +8,19 @@ onSnapshot,
 serverTimestamp
 } from "./firebase.js";
 
-const messages=document.getElementById("messages");
-const text=document.getElementById("text");
-const send=document.getElementById("send");
+const messages = document.getElementById("messages");
+const text = document.getElementById("text");
+const send = document.getElementById("send");
 
-let myName=localStorage.getItem("forever_name");
+let myName = localStorage.getItem("forever_name");
 
 if(!myName){
 
-myName=prompt("اكتب اسمك");
+myName = prompt("اكتب اسمك");
 
 if(!myName || myName.trim()==""){
 
-myName="زائر";
+myName = "زائر";
 
 }
 
@@ -28,7 +28,7 @@ localStorage.setItem("forever_name",myName);
 
 }
 
-const avatar="https://i.pravatar.cc/100";
+const avatar="https://i.pravatar.cc/150?img=12";
 
 const q=query(
 collection(db,"private_chat"),
@@ -43,11 +43,25 @@ snapshot.forEach((doc)=>{
 
 const data=doc.data();
 
-let time="";
+const box=document.createElement("div");
+
+box.className="message";
+
+if(data.sender===myName){
+
+box.classList.add("me");
+
+}else{
+
+box.classList.add("friend");
+
+}
+
+let t="";
 
 if(data.time){
 
-time=new Date(
+t=new Date(
 data.time.seconds*1000
 ).toLocaleTimeString("ar-IQ",{
 hour:"2-digit",
@@ -56,21 +70,7 @@ minute:"2-digit"
 
 }
 
-const msg=document.createElement("div");
-
-msg.className="message";
-
-if(data.sender===myName){
-
-msg.classList.add("me");
-
-}else{
-
-msg.classList.add("friend");
-
-}
-
-msg.innerHTML=`
+box.innerHTML=`
 
 <img class="avatar" src="${avatar}">
 
@@ -82,7 +82,7 @@ ${data.sender}
 
 </div>
 
-<div>
+<div class="text">
 
 ${data.text}
 
@@ -90,7 +90,7 @@ ${data.text}
 
 <div class="time">
 
-${time}
+${t}
 
 </div>
 
@@ -98,7 +98,7 @@ ${time}
 
 `;
 
-messages.appendChild(msg);
+messages.appendChild(box);
 
 });
 
