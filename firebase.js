@@ -31,19 +31,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export {
-
 db,
-
 collection,
-
 addDoc,
-
 query,
-
 orderBy,
-
 onSnapshot,
-
 serverTimestamp
-
 };
