@@ -2,75 +2,676 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Forever</title>
+<title>Forever Chat</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,Tahoma,sans-serif;
+background:#0d0d16;
+color:white;
+}
+
+#app{
+max-width:520px;
+margin:auto;
+height:100vh;
+background:#11121d;
+display:flex;
+flex-direction:column;
+}
+
+header{
+height:65px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#151622;
+border-bottom:1px solid #292a36;
+}
+
+.logo{
+font-size:25px;
+font-weight:bold;
+}
+
+#messages{
+flex:1;
+overflow-y:auto;
+padding:15px;
+padding-bottom:120px;
+}
+
+.msg{
+max-width:80%;
+margin:8px 0;
+padding:11px 14px;
+border-radius:17px;
+background:#272936;
+word-wrap:break-word;
+}
+
+.mine{
+margin-right:auto;
+background:#00c853;
+}
+
+.name{
+font-size:12px;
+font-weight:bold;
+color:#7dffad;
+margin-bottom:4px;
+}
+
+.mine .name{
+color:white;
+}
+
+.chat-image{
+max-width:230px;
+max-height:300px;
+border-radius:15px;
+display:block;
+}
+
+#sendBox{
+position:fixed;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+width:min(520px,100%);
+background:#181923;
+border-top:1px solid #292a36;
+padding:8px;
+}
+
+#emojiPicker{
+display:none;
+background:#101119;
+padding:10px;
+border-radius:15px;
+margin-bottom:8px;
+}
+
+.words{
+display:flex;
+gap:6px;
+flex-wrap:wrap;
+margin-bottom:10px;
+}
+
+.word{
+background:#00c853;
+padding:6px 10px;
+border-radius:14px;
+font-size:12px;
+font-weight:bold;
+}
+
+.emojis{
+display:grid;
+grid-template-columns:repeat(8,1fr);
+gap:6px;
+text-align:center;
+font-size:23px;
+}
+
+.emoji{
+padding:5px;
+cursor:pointer;
+}
+
+.input-row{
+display:flex;
+gap:7px;
+}
+
+#text{
+flex:1;
+min-width:0;
+border:0;
+outline:none;
+border-radius:15px;
+padding:13px;
+font-size:16px;
+background:#292a37;
+color:white;
+}
+
+button{
+border:0;
+cursor:pointer;
+}
+
+.icon{
+width:47px;
+border-radius:14px;
+background:#292a37;
+font-size:21px;
+color:white;
+}
+
+.send{
+width:78px;
+border-radius:14px;
+background:#00c853;
+color:white;
+font-weight:bold;
+font-size:15px;
+}
+
+#login{
+position:fixed;
+inset:0;
+background:linear-gradient(145deg,#0d0d16,#251b45);
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+z-index:10;
+}
+
+.login-box{
+width:min(390px,100%);
+background:#181923;
+border:1px solid #30313e;
+border-radius:25px;
+padding:28px;
+text-align:center;
+}
+
+.login-logo{
+font-size:48px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.login-text{
+font-size:17px;
+color:#aaa;
+margin-bottom:25px;
+}
+
+#username{
+width:100%;
+padding:14px;
+border:0;
+outline:none;
+border-radius:15px;
+background:#292a37;
+color:white;
+font-size:16px;
+margin-bottom:10px;
+}
+
+#loginBtn{
+width:100%;
+padding:14px;
+border-radius:15px;
+background:#00c853;
+color:white;
+font-size:17px;
+font-weight:bold;
+}
+
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
 </head>
 
 <body>
 
-<div id="login">
-
-<h1>Forever</h1>
-
-<img id="preview" src="https://i.ibb.co/z5k7wzj/avatar.png">
-
-<input
-type="file"
-id="photo"
-accept="image/*">
-
-<input
-type="text"
-id="name"
-placeholder="اكتب اسمك">
-
-<button id="loginBtn">
-
-دخول
-
-</button>
-
-</div>
-
-<div id="chat">
+<div id="app">
 
 <header>
-
-<h2>Forever</h2>
-
+<div class="logo">Forever</div>
 </header>
 
-<div id="messages">
+<div id="messages"></div>
 
 </div>
 
-<footer>
+
+<div id="login">
+
+<div class="login-box">
+
+<div class="login-logo">
+Forever
+</div>
+
+<div class="login-text">
+أيُظلم لي ليلُ و انتِ قمري!
+</div>
 
 <input
-type="text"
-id="text"
-placeholder="اكتب رسالة...">
+id="username"
+maxlength="30"
+placeholder="اكتب اسمك"
+>
 
-<button id="send">
-
-➤
-
+<button id="loginBtn">
+دخول
 </button>
-
-</footer>
 
 </div>
 
-<script type="module" src="firebase.js"></script>
+</div>
 
-<script type="module" src="script.js"></script>
+
+<div id="sendBox">
+
+<div id="emojiPicker">
+
+<div class="words">
+
+<span class="word" onclick="addText('كنوني')">
+كنوني
+</span>
+
+<span class="word" onclick="addText('نوستي')">
+نوستي
+</span>
+
+<span class="word" onclick="addText('أحبج ❤️')">
+أحبج ❤️
+</span>
+
+<span class="word" onclick="addText('أحبك ❤️')">
+أحبك ❤️
+</span>
+
+</div>
+
+<div id="emojiGrid" class="emojis"></div>
+
+</div>
+
+
+<div class="input-row">
+
+<button class="icon" onclick="document.getElementById('imageInput').click()">
+🖼️
+</button>
+
+<input
+id="imageInput"
+type="file"
+accept="image/*"
+style="display:none"
+onchange="sendImage(this)"
+>
+
+<button class="icon" onclick="toggleEmoji()">
+😀
+</button>
+
+<input
+id="text"
+maxlength="1000"
+placeholder="اكتب رسالتك"
+>
+
+<button class="send" onclick="send()">
+إرسال
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyBIn6F4zAj0zPLiqeaX-oyw8BN7vcPs1gk",
+
+authDomain:"forever-6d5f3.firebaseapp.com",
+
+projectId:"forever-6d5f3",
+
+storageBucket:"forever-6d5f3.firebasestorage.app",
+
+messagingSenderId:"59020871625",
+
+appId:"1:59020871625:web:3b836ecba5a90dbf3d4a18"
+
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+const db=firebase.firestore();
+
+const storage=firebase.storage();
+
+const messages=document.getElementById("messages");
+
+const text=document.getElementById("text");
+
+let currentUser=localStorage.getItem("forever_name") || "";
+
+
+function escapeHTML(value){
+
+return value.replace(/[&<>"']/g,function(c){
+
+return {
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[c];
+
+});
+
+}
+
+
+function showMessage(data){
+
+const box=document.createElement("div");
+
+box.className="msg";
+
+if(data.sender===currentUser){
+
+box.classList.add("mine");
+
+}
+
+
+const name=document.createElement("div");
+
+name.className="name";
+
+name.textContent=data.sender || "مستخدم";
+
+box.appendChild(name);
+
+
+if(data.type==="image" && data.image){
+
+const img=document.createElement("img");
+
+img.src=data.image;
+
+img.className="chat-image";
+
+box.appendChild(img);
+
+}
+
+else{
+
+const message=document.createElement("div");
+
+message.innerHTML=escapeHTML(data.text || "");
+
+box.appendChild(message);
+
+}
+
+
+messages.appendChild(box);
+
+}
+
+
+db.collection("private_chat")
+
+.orderBy("time")
+
+.onSnapshot(function(snapshot){
+
+messages.innerHTML="";
+
+snapshot.forEach(function(doc){
+
+showMessage(doc.data());
+
+});
+
+messages.scrollTop=messages.scrollHeight;
+
+});
+
+
+function login(){
+
+const name=document.getElementById("username").value.trim();
+
+if(!name){
+
+alert("اكتب اسمك أولاً");
+
+return;
+
+}
+
+currentUser=name;
+
+localStorage.setItem("forever_name",name);
+
+document.getElementById("login").style.display="none";
+
+text.focus();
+
+}
+
+
+document.getElementById("loginBtn").onclick=login;
+
+
+document.getElementById("username")
+
+.addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+
+login();
+
+}
+
+});
+
+
+function send(){
+
+const value=text.value.trim();
+
+if(!value || !currentUser)return;
+
+
+db.collection("private_chat").add({
+
+sender:currentUser,
+
+text:value,
+
+type:"text",
+
+time:firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+text.value="";
+
+}
+
+
+function toggleEmoji(){
+
+const picker=document.getElementById("emojiPicker");
+
+picker.style.display=
+
+picker.style.display==="block"
+
+?"none"
+
+:"block";
+
+}
+
+
+function addText(value){
+
+text.value += (text.value ? " " : "") + value;
+
+text.focus();
+
+}
+
+
+const emojis=[
+
+"😀","😂","🤣","😍","🥰","😘","😊","😎",
+
+"😭","🥹","😢","😡","😇","🤗","🙈","😉",
+
+"❤️","🤍","🩷","💜","🫶","👍","👌","👏",
+
+"🙏","🔥","✨","💯","🎉","🫂","🫴🏻","🫳🏻"
+
+];
+
+
+const emojiGrid=document.getElementById("emojiGrid");
+
+
+emojis.forEach(function(e){
+
+const item=document.createElement("span");
+
+item.className="emoji";
+
+item.textContent=e;
+
+item.onclick=function(){
+
+text.value += (text.value ? " " : "") + e;
+
+text.focus();
+
+};
+
+emojiGrid.appendChild(item);
+
+});
+
+
+async function sendImage(input){
+
+const file=input.files[0];
+
+if(!file || !currentUser)return;
+
+
+if(!file.type.startsWith("image/")){
+
+alert("اختار صورة فقط");
+
+return;
+
+}
+
+
+if(file.size > 5 * 1024 * 1024){
+
+alert("حجم الصورة لازم يكون أقل من 5MB");
+
+return;
+
+}
+
+
+try{
+
+const fileName=
+
+Date.now()+"_"+Math.random().toString(36).substring(2)+".jpg";
+
+
+const ref=
+
+storage.ref()
+
+.child("chat_images/"+fileName);
+
+
+await ref.put(file);
+
+
+const url=await ref.getDownloadURL();
+
+
+await db.collection("private_chat").add({
+
+sender:currentUser,
+
+type:"image",
+
+image:url,
+
+text:"",
+
+time:firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+input.value="";
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert("ما گدرت أرسل الصورة. تأكد من إعدادات Firebase Storage.");
+
+}
+
+}
+
+
+text.addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+
+e.preventDefault();
+
+send();
+
+}
+
+});
+
+
+if(currentUser){
+
+document.getElementById("login").style.display="none";
+
+}
+
+</script>
 
 </body>
 
